@@ -4,7 +4,6 @@ function App() {
 
   return (
     <>
-      <p>It's not borken</p>
     </>
   )
 }

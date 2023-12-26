@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import { getDatabase, ref, child, get } from 'firebase/database';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyCm-l8Os6PK9OzSytq18r2NpH_zxHcXLKY',
@@ -20,8 +20,16 @@ function AppWrapper() {
     useEffect(() => {
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        console.log(app);
-        console.log(db);
+        const dbRef = ref(db);
+
+        get(child(dbRef, 'users')).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => console.log(error));
+
         return () => {
         };
     }, []);

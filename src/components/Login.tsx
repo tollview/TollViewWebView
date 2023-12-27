@@ -8,6 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [user, setUser] = useState<User | null>(null);
     const navigate = useNavigate();
+    
     const handleUserSignIn = async () => {
         const userData = await handleSignIn(email, password);
         setUser(userData);
@@ -15,6 +16,7 @@ const Login = () => {
             navigate('/'); 
         }
     };
+
     return (
         <form>
             <label>Email:</label>

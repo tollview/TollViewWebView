@@ -1,15 +1,19 @@
 import {useState} from "react";
 import {handleSignIn} from "../scripts/signIn.ts";
 import {User} from "firebase/auth";
-
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [user, setUser] = useState<User | null>(null);
+    const navigate = useNavigate();
     const handleUserSignIn = async () => {
         const userData = await handleSignIn(email, password);
         setUser(userData);
+        if (userData) {
+            navigate('/'); 
+        }
     };
     return (
         <form>
@@ -22,20 +26,9 @@ const Login = () => {
             <button onClick={(e) => {
                 e.preventDefault();
                 handleUserSignIn();
-            }}>Sign In
-            </button>
+            }}>Sign In</button>
 
-            <p>
-                {
-                    user ? (
-                        <>
-                            <p>Welcome, {user.email}!</p>
-                        </>
-                    ) : (
-                        <p>user not loaded</p>
-                    )
-                }
-            </p>
+            {user ? <p>Welcome, {user.email}!</p> : <p>User not loaded</p>}
         </form>
     );
 

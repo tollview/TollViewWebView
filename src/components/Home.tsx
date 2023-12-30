@@ -1,14 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {app} from '../scripts/firebaseConfig';
-import {DataSnapshot, get, getDatabase, ref} from "firebase/database";
-import {Toll} from "../models/Toll.ts";
-import {Timestamp} from "../models/Timestamp.ts";
-import {Gate} from "../models/Gate.ts";
+import { DataSnapshot, get, getDatabase, ref } from "firebase/database";
+import React, { useEffect, useState } from 'react';
+import { useUser } from '../contexts/UserContext';
+import { Gate } from "../models/Gate.ts";
+import { Timestamp } from "../models/Timestamp.ts";
+import { Toll } from "../models/Toll.ts";
+import { app } from '../scripts/firebaseConfig';
 
 const Home: React.FC = () => {
     const db = getDatabase(app);
     const [gatesList, setGatesList] = useState<Array<Gate>>([]);
     const [tollsList, setTollsList] = useState<Array<Toll>>([]);
+    const { user } = useUser();
 
     useEffect(() => {
 
@@ -33,52 +35,63 @@ const Home: React.FC = () => {
             }
         };
 
-        const currentUser = "8cdV1LLiTbZtNnQCoRYvs5qBhSn2"
         //todo DON'T HARDCODE THIS
         const buildTollsList = async () => {
-            const tollsRef = ref(db, `users/${currentUser}/tolls/`);
-            try {
-                const snapshot: DataSnapshot = await get(tollsRef);
-                if (snapshot.exists()) {
-                    const tollsData = snapshot.val();
-                    const tollsList: Array<Toll> = [];
-                    tollsData.forEach((_toll: JSON, index: number) => {
-                        const timestampModel: Timestamp = {
-                            date: Number(tollsData[index]["timestamp"]["date"]),
-                            hours: Number(tollsData[index]["timestamp"]["hours"]),
-                            minutes: Number(tollsData[index]["timestamp"]["minutes"]),
-                            month: Number(tollsData[index]["timestamp"]["month"])+1,
-                            timezoneOffset: Number(tollsData[index]["timestamp"]["timezoneOffset"]),
-                            year: Number(tollsData[index]["timestamp"]["year"])+1900,
-                        }
-                        const tollModel: Toll = {
-                            gateId: JSON.stringify(tollsData[index]["gateId"]),
-                            timestamp: timestampModel
-                        }
-                        tollsList.push(tollModel)
-                    });
-                    return tollsList
-                } else {
-                    console.log("tolls unable to be found");
+            if (user) {
+                const tollsRef = ref(db, `users/${user.uid}/tolls/`);
+                try {
+                    const snapshot: DataSnapshot = await get(tollsRef);
+                    if (snapshot.exists()) {
+                        const tollsData = snapshot.val();
+                        const tollsList: Array<Toll> = [];
+                        tollsData.forEach((_toll: JSON, index: number) => {
+                            const timestampModel: Timestamp = {
+                                date: Number(tollsData[index]["timestamp"]["date"]),
+                                hours: Number(tollsData[index]["timestamp"]["hours"]),
+                                minutes: Number(tollsData[index]["timestamp"]["minutes"]),
+                                month: Number(tollsData[index]["timestamp"]["month"])+1,
+                                timezoneOffset: Number(tollsData[index]["timestamp"]["timezoneOffset"]),
+                                year: Number(tollsData[index]["timestamp"]["year"])+1900,
+                            }
+                            const tollModel: Toll = {
+                                gateId: JSON.stringify(tollsData[index]["gateId"]),
+                                timestamp: timestampModel
+                            }
+                            tollsList.push(tollModel)
+                        });
+                        return tollsList
+                    } else {
+                        console.log("tolls unable to be found");
+                        return [];
+                    }
+                } catch (error) {
+                    console.error(error);
                     return [];
                 }
-            } catch (error) {
-                console.error(error);
+            } else {
+                console.log("User not found");
                 return [];
             }
         }
 
-        fetchGates().then(async (fetchedGatesList) => {
-            setGatesList(fetchedGatesList); // Update the state
-            setTollsList(await buildTollsList());
-            console.log(`gates size: ${gatesList.length}; tolls size: ${tollsList.length}`)
-        });
+        const setupData = async () => {
+            if (user) {
+                const fetchedGatesList = await fetchGates();
+                setGatesList(fetchedGatesList);
+                const fetchedTollsList = await buildTollsList();
+                setTollsList(fetchedTollsList);
 
-    }, [db]);
+                console.log(`gatesList size: ${fetchedGatesList.length}, tollsList size: ${fetchedTollsList.length}`);
+            }
+        };
+
+        setupData();
+
+    }, [user]);
 
     return (
         <div>
-            <p>{"we're still working on this part of the website"}</p>
+            {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>} {/* Display user info */}
         </div>
     );
 }

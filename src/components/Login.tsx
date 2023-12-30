@@ -1,17 +1,17 @@
-import {useState} from "react";
-import {handleSignIn} from "../scripts/signIn.ts";
-import {User} from "firebase/auth";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from '../contexts/UserContext'; // Import the useUser hook
+import { handleSignIn } from "../scripts/signIn";
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [user, setUser] = useState<User | null>(null);
+    const { user, setUser } = useUser(); // Use the useUser hook
     const navigate = useNavigate();
     
     const handleUserSignIn = async () => {
         const userData = await handleSignIn(email, password);
-        setUser(userData);
+        setUser(userData); // Update the user state in the context
         if (userData) {
             navigate('/'); 
         }
@@ -33,7 +33,6 @@ const Login = () => {
             {user ? <p>Welcome, {user.email}!</p> : <p>User not loaded</p>}
         </form>
     );
-
 }
 
 export default Login;

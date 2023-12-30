@@ -8,49 +8,40 @@ import { Gate } from "../models/Gate.ts";
 const Home: React.FC = () => {
     const [displayable, setDisplayable] = useState<string | null>(null);
     const db = getDatabase(app);
-    const dbRef = ref(db);
-    let gatesList: Array<Gate> = [];
+    const [gatesList, setGatesList] = useState<Array<Gate>>([]);
 
     useEffect(() => {
-        const gatesRef = ref(db, 'gates/');
-        get(gatesRef).then((snapshot: DataSnapshot) => {
-            if (snapshot.exists()) {
 
-                gatesList = [];
-                const gatesData = snapshot.val();
-
-                gatesData.forEach((gateData: any) => {
-                    const gateModel: Gate = {
+        const fetchGates = async () => {
+            const gatesRef = ref(db, 'gates/');
+            try {
+                const snapshot = await get(gatesRef);
+                if (snapshot.exists()) {
+                    const gatesData = snapshot.val();
+                    const tempGatesList = gatesData.map((gateData: any) => ({
                         id: gateData.id,
                         name: gateData.name,
                         cost: Number(gateData.cost)
-                    }
-                    console.log(`id: ${gateModel.id}`)
-                    console.log(`name: ${gateModel.name}`)
-                    console.log(`cost: ${gateModel.cost}`)
-                    gatesList.push(gateModel);
-                })
-
-                console.log(`GATES LIST DONE: ${gatesList}`)
-
-                console.log(`GATES LIST SIZE: ${gatesList.length}`)
-                gatesList.forEach((gate) => {
-                    console.log(`GATE: ${JSON.stringify(gate)}`)
-                })
-
-            }else{
-                console.log("gates unable to be found");
+                    }));
+                    return tempGatesList;
+                } else {
+                    console.log("gates unable to be found");
+                    return [];
+                }
+            } catch (error) {
+                console.error(error);
+                return [];
             }
-        }).catch((error) => console.log(error))
-        
-        
+        };
 
-        const buildTollsList = () => {
+        const buildTollsList = (gatesList: Array<Gate>) => {
+            const dbRef = ref(db);
+        
             const unsubscribe = onValue(child(dbRef, 'users'), (snapshot: DataSnapshot) => {
                 if (snapshot.exists()) {
                     const currentUserTollsList = snapshot.val()["8cdV1LLiTbZtNnQCoRYvs5qBhSn2"]["tolls"];
-                    //todo FIX THIS HARDCODING // hackers don't look here
-                    let displayVal: string = ""
+                    let displayVal = "";
+        
                     currentUserTollsList.forEach((_toll: JSON, index: number) => {
                         const timestampModel: Timestamp = {
                             date: Number(currentUserTollsList[index]["timestamp"]["date"]),
@@ -67,16 +58,24 @@ const Home: React.FC = () => {
                         console.log(tollModel.timestamp)
                         displayVal += `GateId: ${tollModel.gateId} at ${tollModel.timestamp}`
                     })
+        
                     setDisplayable(displayVal);
                 } else {
                     setDisplayable("No data available");
                 }
             });
+        
+            // Return a function to unsubscribe from the listener when the component unmounts
             return () => unsubscribe();
         };
 
-        buildTollsList();
-    }, [dbRef]);
+        fetchGates().then((fetchedGatesList) => {
+            setGatesList(fetchedGatesList); // Update the state
+            console.log(`GATES LIST FETCHED: ${fetchedGatesList}, size: ${fetchedGatesList.length}`)
+            buildTollsList(fetchedGatesList); // Now build tolls list
+        });
+
+    }, [db]);
 
     return (
         <div>

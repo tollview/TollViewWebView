@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { app } from '../scripts/firebaseConfig';
 import { getDatabase, ref, child, onValue, DataSnapshot } from "firebase/database";
+import {Toll} from "../models/Toll.ts";
 
 const Home: React.FC = () => {
     const [displayable, setDisplayable] = useState<string | null>(null);
@@ -13,13 +14,13 @@ const Home: React.FC = () => {
                 if (snapshot.exists()) {
                     const currentUserTollsList = snapshot.val()["8cdV1LLiTbZtNnQCoRYvs5qBhSn2"]["tolls"];
                     let displayVal: string = ""
-                    currentUserTollsList.forEach((_: JSON, index: number) => {
-                        const gateId: string = JSON.stringify(currentUserTollsList[index]["gateId"]);
-                        const year: number = Number(currentUserTollsList[index]["timestamp"]["year"]) + 1900;
-                        const month: number = Number(currentUserTollsList[index]["timestamp"]["month"]) + 1;
-                        const date: string = JSON.stringify(currentUserTollsList[index]["timestamp"]["date"]);
-                        const dateFull: string = `${year} ${month} ${date}`
-                        displayVal += (`${dateFull}: ${gateId}`);
+                    currentUserTollsList.forEach((_toll: JSON, index: number) => {
+                        const tollModel: Toll = {
+                            gateId: JSON.stringify(currentUserTollsList[index]["gateId"]),
+                            timestamp: JSON.stringify(currentUserTollsList[index]["timestamp"])
+                        }
+                        console.log(tollModel.timestamp)
+                        displayVal += `GateId: ${tollModel.gateId} at ${tollModel.timestamp}`
                     })
                     setDisplayable(displayVal);
                 } else {

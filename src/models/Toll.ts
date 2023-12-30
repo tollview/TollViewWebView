@@ -1,4 +1,4 @@
-interface Toll {
+export interface Toll {
     gateId: string
-    timestamp: Date
+    timestamp: string
 }

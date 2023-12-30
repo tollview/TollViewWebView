@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { app } from '../scripts/firebaseConfig';
-import { getDatabase, ref, child, onValue, DataSnapshot } from "firebase/database";
+import {getDatabase, ref, child, onValue, DataSnapshot, get} from "firebase/database";
 import {Toll} from "../models/Toll.ts";
 import {Timestamp} from "../models/Timestamp.ts";
+import { Gate} from "../models/Gate.ts";
 
 const Home: React.FC = () => {
     const [displayable, setDisplayable] = useState<string | null>(null);
     const db = getDatabase(app);
     const dbRef = ref(db);
+    const gatesList: Array<Gate> = [];
 
     useEffect(() => {
-        const fetchData = () => {
+        const gatesRef = ref(db, 'gates/');
+        get(gatesRef).then((snapshot: DataSnapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val())
+            }else{
+                console.log("gates unable to be found");
+            }
+        }).catch((error) => console.log(error))
+        console.log(`shut up compiler ${gatesList}`)
+        const buildTollsList = () => {
             const unsubscribe = onValue(child(dbRef, 'users'), (snapshot: DataSnapshot) => {
                 if (snapshot.exists()) {
                     const currentUserTollsList = snapshot.val()["8cdV1LLiTbZtNnQCoRYvs5qBhSn2"]["tolls"];
+                    //todo FIX THIS HARDCODING // hackers don't look here
                     let displayVal: string = ""
                     currentUserTollsList.forEach((_toll: JSON, index: number) => {
                         const timestampModel: Timestamp = {
@@ -39,7 +51,7 @@ const Home: React.FC = () => {
             return () => unsubscribe();
         };
 
-        fetchData();
+        buildTollsList();
     }, [dbRef]);
 
     return (

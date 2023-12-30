@@ -34,8 +34,7 @@ const Home: React.FC = () => {
                 return [];
             }
         };
-
-        //todo DON'T HARDCODE THIS
+        
         const buildTollsList = async () => {
             if (user) {
                 const tollsRef = ref(db, `users/${user.uid}/tolls/`);
@@ -82,8 +81,18 @@ const Home: React.FC = () => {
                 setTollsList(fetchedTollsList);
 
                 console.log(`gatesList size: ${fetchedGatesList.length}, tollsList size: ${fetchedTollsList.length}`);
+                const tollsByDate = fetchedTollsList.reduce((acc, toll) => {
+                    const dateKey = `${toll.timestamp.year}-${toll.timestamp.month}-${toll.timestamp.date}`;
+                    if (!acc[dateKey]) {
+                        acc[dateKey] = [];
+                    }
+                    acc[dateKey].push(toll);
+                    return acc;
+                }, {});
+                console.log(tollsByDate);
             }
         };
+
 
         setupData();
 

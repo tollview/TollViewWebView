@@ -1,26 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { app } from '../scripts/firebaseConfig';
-import {getDatabase, ref, child, onValue, DataSnapshot, get} from "firebase/database";
-import {Toll} from "../models/Toll.ts";
-import {Timestamp} from "../models/Timestamp.ts";
-import { Gate} from "../models/Gate.ts";
+import { getDatabase, ref, child, onValue, DataSnapshot, get } from "firebase/database";
+import { Toll } from "../models/Toll.ts";
+import { Timestamp } from "../models/Timestamp.ts";
+import { Gate } from "../models/Gate.ts";
 
 const Home: React.FC = () => {
     const [displayable, setDisplayable] = useState<string | null>(null);
     const db = getDatabase(app);
     const dbRef = ref(db);
-    const gatesList: Array<Gate> = [];
+    let gatesList: Array<Gate> = [];
 
     useEffect(() => {
         const gatesRef = ref(db, 'gates/');
         get(gatesRef).then((snapshot: DataSnapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val())
+
+                gatesList = [];
+                const gatesData = snapshot.val();
+
+                gatesData.forEach((gateData: any) => {
+                    const gateModel: Gate = {
+                        id: gateData.id,
+                        name: gateData.name,
+                        cost: Number(gateData.cost)
+                    }
+                    console.log(`id: ${gateModel.id}`)
+                    console.log(`name: ${gateModel.name}`)
+                    console.log(`cost: ${gateModel.cost}`)
+                    gatesList.push(gateModel);
+                })
+
+                console.log(`GATES LIST DONE: ${gatesList}`)
+
+                console.log(`GATES LIST SIZE: ${gatesList.length}`)
+                gatesList.forEach((gate) => {
+                    console.log(`GATE: ${JSON.stringify(gate)}`)
+                })
+
             }else{
                 console.log("gates unable to be found");
             }
         }).catch((error) => console.log(error))
-        console.log(`shut up compiler ${gatesList}`)
+        
+        
+
         const buildTollsList = () => {
             const unsubscribe = onValue(child(dbRef, 'users'), (snapshot: DataSnapshot) => {
                 if (snapshot.exists()) {

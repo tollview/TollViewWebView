@@ -11,6 +11,7 @@ const Home: React.FC = () => {
     const [gatesList, setGatesList] = useState<Array<Gate>>([]);
     const [tollsList, setTollsList] = useState<Array<Toll>>([]);
     const { user } = useUser();
+    let [ tollsByDate, setTollsByDate ] = useState({});
 
     useEffect(() => {
 
@@ -90,7 +91,7 @@ const Home: React.FC = () => {
 
                 console.log(`gatesList size: ${fetchedGatesList.length}, tollsList size: ${fetchedTollsList.length}`);
                 console.log(`fetchedTollsList: ${JSON.stringify(fetchedTollsList[0]["gateId"])}`)
-                const tollsByDate = fetchedTollsList.reduce((acc, toll: Toll) => {
+                setTollsByDate(fetchedTollsList.reduce((acc, toll: Toll) => {
                     const dateKey = `${toll.timestamp.year}-${toll.timestamp.month}-${toll.timestamp.date}`;
                     if (!acc[dateKey]) {
                         acc[dateKey] = 0;
@@ -105,7 +106,7 @@ const Home: React.FC = () => {
                     }
 
                     return acc;
-                }, {});
+                }, {}));
                 console.log(tollsByDate);
             }
         };
@@ -117,7 +118,8 @@ const Home: React.FC = () => {
 
     return (
         <div>
-            {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>} {/* Display user info */}
+            {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>} 
+            <p>{ JSON.stringify(tollsByDate)} </p>
         </div>
     );
 }

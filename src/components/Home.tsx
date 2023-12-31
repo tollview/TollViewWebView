@@ -1,5 +1,6 @@
 import { DataSnapshot, get, getDatabase, ref } from "firebase/database";
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { Gate } from "../models/Gate.ts";
 import { Timestamp } from "../models/Timestamp.ts";
@@ -8,6 +9,7 @@ import { app } from '../scripts/firebaseConfig';
 import DayReportsList from "./DayReportsList.tsx";
 
 const Home: React.FC = () => {
+    const navigate = useNavigate();
     const db = getDatabase(app);
     const [gatesList, setGatesList] = useState<Array<Gate>>([]);
     const [tollsList, setTollsList] = useState<Array<Toll>>([]);
@@ -15,6 +17,13 @@ const Home: React.FC = () => {
     let [ tollsByDate, setTollsByDate ] = useState({});
 
     useEffect(() => {
+        const redirectToLogin = () => {
+            if (!user) {
+                navigate('/login');
+            }
+        };
+
+        redirectToLogin();
 
         const fetchGates = async () => {
             const gatesRef = ref(db, 'gates/');
@@ -107,7 +116,7 @@ const Home: React.FC = () => {
 
         setupData();
 
-    }, [user]);
+    }, [user, navigate]);
 
     return (
         <div>

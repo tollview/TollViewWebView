@@ -13,6 +13,7 @@ const Home: React.FC = () => {
     const db = getDatabase(app);
     const [gatesList, setGatesList] = useState<Array<Gate>>([]);
     const [tollsList, setTollsList] = useState<Array<Toll>>([]);
+    const [gatesMap, setGatesMap] = useState<Record<string, Gate>>({});
     const { user } = useUser();
     let [ tollsByDate, setTollsByDate ] = useState({});
 
@@ -52,24 +53,29 @@ const Home: React.FC = () => {
                 try {
                     const snapshot: DataSnapshot = await get(tollsRef);
                     if (snapshot.exists()) {
-                        const tollsData = snapshot.val();
                         const tollsList: Array<Toll> = [];
-                        tollsData.forEach((_toll: JSON, index: number) => {
+                        snapshot.forEach((childSnapshot) => {
+                            const key = childSnapshot.key; // This is the Firebase key
+                            const tollData = childSnapshot.val();
+
                             const timestampModel: Timestamp = {
-                                date: Number(tollsData[index]["timestamp"]["date"]),
-                                hours: Number(tollsData[index]["timestamp"]["hours"]),
-                                minutes: Number(tollsData[index]["timestamp"]["minutes"]),
-                                month: Number(tollsData[index]["timestamp"]["month"])+1,
-                                timezoneOffset: Number(tollsData[index]["timestamp"]["timezoneOffset"]),
-                                year: Number(tollsData[index]["timestamp"]["year"])+1900,
+                                date: Number(tollData["timestamp"]["date"]),
+                                hours: Number(tollData["timestamp"]["hours"]),
+                                minutes: Number(tollData["timestamp"]["minutes"]),
+                                month: Number(tollData["timestamp"]["month"]) + 1,
+                                timezoneOffset: Number(tollData["timestamp"]["timezoneOffset"]),
+                                year: Number(tollData["timestamp"]["year"]) + 1900,
                             }
+
                             const tollModel: Toll = {
-                                gateId: tollsData[index]["gateId"],
+                                key: Number(key),
+                                gateId: tollData["gateId"],
                                 timestamp: timestampModel
                             }
-                            tollsList.push(tollModel)
+
+                            tollsList.push(tollModel);
                         });
-                        return tollsList
+                        return tollsList;
                     } else {
                         console.log("tolls unable to be found");
                         return [];
@@ -91,21 +97,18 @@ const Home: React.FC = () => {
                 const fetchedTollsList = await buildTollsList();
                 setTollsList(fetchedTollsList);
 
-                const gatesMap: Record<string, Gate> = fetchedGatesList.reduce((acc: Record<string, Gate>, gate: Gate) => {
+                setGatesMap(fetchedGatesList.reduce((acc: Record<string, Gate>, gate: Gate) => {
                     acc[gate.id] = gate;
                     return acc;
-                }, {});
+                }, {}));
 
-                setTollsByDate(fetchedTollsList.reduce((acc: Record<string, number>, toll: Toll) => {
+                setTollsByDate(fetchedTollsList.reduce((acc: Record<string, any>, toll: Toll) => {
                     const dateKey: string = `${toll.timestamp.year}-${toll.timestamp.month}-${toll.timestamp.date}`;
                     if (!acc[dateKey]) {
-                        acc[dateKey] = 0;
+                        acc[dateKey] = [];
                     }
 
-                    const gate = gatesMap[toll.gateId];
-                    if (gate) {
-                        acc[dateKey] += Number(gate.cost);
-                    }
+                    acc[dateKey].push(toll);
 
                     return acc;
 
@@ -121,7 +124,7 @@ const Home: React.FC = () => {
     return (
         <div>
             {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>} 
-            <DayReportsList tollsByDate={tollsByDate}/>
+            <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap}/>
         </div>
     );
 }

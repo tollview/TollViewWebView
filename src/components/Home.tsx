@@ -91,13 +91,13 @@ const Home: React.FC = () => {
                 const fetchedTollsList = await buildTollsList();
                 setTollsList(fetchedTollsList);
 
-                const gatesMap = fetchedGatesList.reduce((acc, gate: Gate) => {
+                const gatesMap: Record<string, Gate> = fetchedGatesList.reduce((acc: Record<string, Gate>, gate: Gate) => {
                     acc[gate.id] = gate;
                     return acc;
                 }, {});
 
-                setTollsByDate(fetchedTollsList.reduce((acc, toll: Toll) => {
-                    const dateKey = `${toll.timestamp.year}-${toll.timestamp.month}-${toll.timestamp.date}`;
+                setTollsByDate(fetchedTollsList.reduce((acc: Record<string, number>, toll: Toll) => {
+                    const dateKey: string = `${toll.timestamp.year}-${toll.timestamp.month}-${toll.timestamp.date}`;
                     if (!acc[dateKey]) {
                         acc[dateKey] = 0;
                     }

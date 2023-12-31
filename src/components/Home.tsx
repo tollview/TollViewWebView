@@ -5,6 +5,7 @@ import { Gate } from "../models/Gate.ts";
 import { Timestamp } from "../models/Timestamp.ts";
 import { Toll } from "../models/Toll.ts";
 import { app } from '../scripts/firebaseConfig';
+import DayReportsList from "./DayReportsList.tsx";
 
 const Home: React.FC = () => {
     const db = getDatabase(app);
@@ -81,33 +82,25 @@ const Home: React.FC = () => {
                 const fetchedTollsList = await buildTollsList();
                 setTollsList(fetchedTollsList);
 
-                // Convert the gates list to a map for easier lookup
                 const gatesMap = fetchedGatesList.reduce((acc, gate: Gate) => {
                     acc[gate.id] = gate;
                     return acc;
                 }, {});
 
-                console.log(`GATESMAP: ${JSON.stringify(gatesMap["96b26fb5-094e-4afb-a307-69233d77267a"]["cost"])}`)
-
-                console.log(`gatesList size: ${fetchedGatesList.length}, tollsList size: ${fetchedTollsList.length}`);
-                console.log(`fetchedTollsList: ${JSON.stringify(fetchedTollsList[0]["gateId"])}`)
                 setTollsByDate(fetchedTollsList.reduce((acc, toll: Toll) => {
                     const dateKey = `${toll.timestamp.year}-${toll.timestamp.month}-${toll.timestamp.date}`;
                     if (!acc[dateKey]) {
                         acc[dateKey] = 0;
                     }
-                    
-                    // TODO: How we get toll.gateId is wrong, works when hardcoded with the console.log above
-                    console.log(`gateId was: ${gatesMap[toll.gateId]}`)
+
                     const gate = gatesMap[toll.gateId];
-                    console.log(`GATE WAS: ${JSON.stringify(gate)}`)
                     if (gate) {
                         acc[dateKey] += Number(gate.cost);
                     }
 
                     return acc;
-                }, {}));
-                console.log(tollsByDate);
+
+                }, {}),);
             }
         };
 
@@ -119,7 +112,7 @@ const Home: React.FC = () => {
     return (
         <div>
             {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>} 
-            <p>{ JSON.stringify(tollsByDate)} </p>
+            <DayReportsList tollsByDate={tollsByDate}/>
         </div>
     );
 }

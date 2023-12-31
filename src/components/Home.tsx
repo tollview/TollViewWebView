@@ -53,7 +53,7 @@ const Home: React.FC = () => {
                                 year: Number(tollsData[index]["timestamp"]["year"])+1900,
                             }
                             const tollModel: Toll = {
-                                gateId: JSON.stringify(tollsData[index]["gateId"]),
+                                gateId: tollsData[index]["gateId"],
                                 timestamp: timestampModel
                             }
                             tollsList.push(tollModel)
@@ -80,13 +80,30 @@ const Home: React.FC = () => {
                 const fetchedTollsList = await buildTollsList();
                 setTollsList(fetchedTollsList);
 
+                // Convert the gates list to a map for easier lookup
+                const gatesMap = fetchedGatesList.reduce((acc, gate: Gate) => {
+                    acc[gate.id] = gate;
+                    return acc;
+                }, {});
+
+                console.log(`GATESMAP: ${JSON.stringify(gatesMap["96b26fb5-094e-4afb-a307-69233d77267a"]["cost"])}`)
+
                 console.log(`gatesList size: ${fetchedGatesList.length}, tollsList size: ${fetchedTollsList.length}`);
-                const tollsByDate = fetchedTollsList.reduce((acc, toll) => {
+                console.log(`fetchedTollsList: ${JSON.stringify(fetchedTollsList[0]["gateId"])}`)
+                const tollsByDate = fetchedTollsList.reduce((acc, toll: Toll) => {
                     const dateKey = `${toll.timestamp.year}-${toll.timestamp.month}-${toll.timestamp.date}`;
                     if (!acc[dateKey]) {
-                        acc[dateKey] = [];
+                        acc[dateKey] = 0;
                     }
-                    acc[dateKey].push(toll);
+                    
+                    // TODO: How we get toll.gateId is wrong, works when hardcoded with the console.log above
+                    console.log(`gateId was: ${gatesMap[toll.gateId]}`)
+                    const gate = gatesMap[toll.gateId];
+                    console.log(`GATE WAS: ${JSON.stringify(gate)}`)
+                    if (gate) {
+                        acc[dateKey] += Number(gate.cost);
+                    }
+
                     return acc;
                 }, {});
                 console.log(tollsByDate);

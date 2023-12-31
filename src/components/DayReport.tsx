@@ -1,7 +1,7 @@
 import React from "react";
 
 interface DayReportProps {
-    thisDayAndCost: [number, number]; // Assuming both elements are numbers
+    thisDayAndCost: [string, number];
 }
 
 const DayReport: React.FC<DayReportProps> = ({ thisDayAndCost }) => {
@@ -17,6 +17,9 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayAndCost }) => {
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "75vw" }}>
             <h2>{thisDayAndCost[0]}</h2>
             <h2>{formatCurrency(thisDayAndCost[1])}</h2>
+            <button>
+                <span role="img" aria-label="Trash Can">🗑️</span>
+            </button>
         </div>
     )
 }

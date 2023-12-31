@@ -116,7 +116,7 @@ const Home: React.FC = () => {
 
         setupData();
 
-    }, [user, navigate]);
+    }, [user, navigate, db]);
 
     return (
         <div>

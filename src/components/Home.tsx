@@ -1,21 +1,21 @@
-import { DataSnapshot, get, getDatabase, ref } from "firebase/database";
+import { DataSnapshot, get, ref } from "firebase/database";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
+import { useFirebase} from "../contexts/FirebaseContext.tsx";
 import { Gate } from "../models/Gate.ts";
 import { Timestamp } from "../models/Timestamp.ts";
 import { Toll } from "../models/Toll.ts";
-import { app } from '../scripts/firebaseConfig';
 import DayReportsList from "./DayReportsList.tsx";
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
-    const db = getDatabase(app);
+    const { db }  = useFirebase();
     const [gatesList, setGatesList] = useState<Array<Gate>>([]);
     const [tollsList, setTollsList] = useState<Array<Toll>>([]);
+    const [tollsByDate, setTollsByDate] = useState({});
     const [gatesMap, setGatesMap] = useState<Record<string, Gate>>({});
     const { user } = useUser();
-    let [ tollsByDate, setTollsByDate ] = useState({});
 
     useEffect(() => {
         const redirectToLogin = () => {

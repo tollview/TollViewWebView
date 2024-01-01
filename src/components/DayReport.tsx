@@ -1,9 +1,9 @@
+import { child, ref } from "firebase/database";
 import React from "react";
+import { useFirebase } from "../contexts/FirebaseContext.tsx";
+import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
-import {Toll} from "../models/Toll.ts";
-import {useFirebase} from "../contexts/FirebaseContext.tsx";
-import {useUser} from "../contexts/UserContext.tsx";
-import {ref, child} from "firebase/database";
+import { Toll } from "../models/Toll.ts";
 
 
 interface DayReportProps {
@@ -40,7 +40,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap }) 
     const handleDelete = ()=> {
         tollsArrayForDay.forEach((toll: Toll) => {
             const deletionIndex: number = Number(toll["key"])
-            const deletionTarget = dbRefAtUserTolls
+            const deletionTarget = child(dbRefAtUserTolls, `${deletionIndex}`);
         })
 
     }

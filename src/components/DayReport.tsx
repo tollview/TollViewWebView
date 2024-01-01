@@ -1,4 +1,4 @@
-import { child, ref } from "firebase/database";
+import {child, ref, remove} from "firebase/database";
 import React from "react";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
@@ -41,6 +41,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap }) 
         tollsArrayForDay.forEach((toll: Toll) => {
             const deletionIndex: number = Number(toll["key"])
             const deletionTarget = child(dbRefAtUserTolls, `${deletionIndex}`);
+            remove(deletionTarget).catch((error) => console.error(`Error deleting ${deletionTarget}: ${error}`));
         })
 
     }

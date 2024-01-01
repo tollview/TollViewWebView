@@ -1,8 +1,8 @@
 import { DataSnapshot, get, ref } from "firebase/database";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from '../contexts/UserContext';
-import { useFirebase} from "../contexts/FirebaseContext.tsx";
 import { Gate } from "../models/Gate.ts";
 import { Timestamp } from "../models/Timestamp.ts";
 import { Toll } from "../models/Toll.ts";
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
         <div>
             {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>}
             <button onClick={handleRefresh}>Refresh</button>
-            <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap}/>
+            <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap} onRefresh={handleRefresh}/>
         </div>
     );
 }

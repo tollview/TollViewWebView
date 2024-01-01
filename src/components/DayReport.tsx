@@ -1,5 +1,5 @@
 import {child, ref, remove} from "firebase/database";
-import React from "react";
+import React, {useState} from "react";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
@@ -10,6 +10,7 @@ interface DayReportProps {
     thisDayArrayOfTolls: [string, any];
     gatesMap: Record<string, Gate>;
 }
+
 
 // IF YOU CHANGE THIS NAME IT WILL ALL BREAK. DO NOT DO.
 const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap }) => {

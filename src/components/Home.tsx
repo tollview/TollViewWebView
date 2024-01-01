@@ -16,6 +16,7 @@ const Home: React.FC = () => {
     const [tollsByDate, setTollsByDate] = useState({});
     const [gatesMap, setGatesMap] = useState<Record<string, Gate>>({});
     const { user } = useUser();
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         const redirectToLogin = () => {
@@ -46,7 +47,7 @@ const Home: React.FC = () => {
                 return [];
             }
         };
-        
+
         const buildTollsList = async () => {
             if (user) {
                 const tollsRef = ref(db, `users/${user.uid}/tolls/`);
@@ -119,11 +120,16 @@ const Home: React.FC = () => {
 
         setupData();
 
-    }, [user, navigate, db]);
+    }, [user, navigate, db, refresh]); // Include 'refresh' in the dependency array
+
+    const handleRefresh = () => {
+        setRefresh(!refresh); // Toggle the state to trigger a re-render
+    };
 
     return (
         <div>
-            {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>} 
+            {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>}
+            <button onClick={handleRefresh}>Refresh</button>
             <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap}/>
         </div>
     );

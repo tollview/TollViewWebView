@@ -1,5 +1,5 @@
 import {child, ref, remove} from "firebase/database";
-import React, {useState} from "react";
+import React from "react";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";

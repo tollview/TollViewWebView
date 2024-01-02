@@ -1,6 +1,5 @@
 import React from "react";
 import DayReport from "./DayReport";
-import {Gate} from "../models/Gate.ts";
 
 interface DayReportsListProps {
     tollsByDate: { [key: string]: any };

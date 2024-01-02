@@ -87,6 +87,9 @@ const Home: React.FC = () => {
                 }
             } else {
                 console.log("User not found");
+                //todo this is just to satisfy the debugger for a quick demo build
+                console.log(gatesList);
+                console.log(tollsList);
                 return [];
             }
         }

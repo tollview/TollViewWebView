@@ -1,4 +1,4 @@
-import {child, ref, remove} from "firebase/database";
+import { child, ref, remove } from "firebase/database";
 import React from "react";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
@@ -9,11 +9,12 @@ import { Toll } from "../models/Toll.ts";
 interface DayReportProps {
     thisDayArrayOfTolls: [string, any];
     gatesMap: Record<string, Gate>;
+    onRefresh: () => void;
 }
 
 
 // IF YOU CHANGE THIS NAME IT WILL ALL BREAK. DO NOT DO.
-const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap }) => {
+const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, onRefresh }) => {
     const { db }  = useFirebase();
     const { user } = useUser();
     const dbRefAtUserTolls = ref(db, `users/${user?.uid}/tolls/`)
@@ -44,7 +45,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap }) 
             const deletionTarget = child(dbRefAtUserTolls, `${deletionIndex}`);
             remove(deletionTarget).catch((error) => console.error(`Error deleting ${deletionTarget}: ${error}`));
         })
-
+        onRefresh();
     }
 
     return (

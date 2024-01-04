@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import Login from './components/Login';
+import Home from './pages/Home.tsx';
+import Login from './pages/Login.tsx';
 import { UserProvider } from './contexts/UserContext';
 import {FirebaseProvider} from "./contexts/FirebaseContext.tsx";
 

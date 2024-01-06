@@ -50,7 +50,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
 
     return (
         // todo don't worry this will be proper css eventually - just blasting thru some test displays
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "90vw" }}>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "90vw", border: "1px solid black"}}>
             <h2>{day}</h2>
             <h2>{cost}</h2>
             <button onClick={handleDelete}>

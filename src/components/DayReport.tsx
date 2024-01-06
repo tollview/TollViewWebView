@@ -4,6 +4,7 @@ import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
 import { Toll } from "../models/Toll.ts";
+import "../styles/DayReport.css"
 
 
 interface DayReportProps {
@@ -50,7 +51,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
 
     return (
         // todo don't worry this will be proper css eventually - just blasting thru some test displays
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "90vw", border: "1px solid black"}}>
+        <div className="dayReportLineItem">
             <h2>{day}</h2>
             <h2>{cost}</h2>
             <button onClick={handleDelete}>

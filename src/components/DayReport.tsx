@@ -1,5 +1,5 @@
 import { child, ref, remove } from "firebase/database";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
@@ -28,16 +28,12 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
     const [showModal, setShowModal] = useState(false);
 
     const handleModalOpen = () => {
-        console.log("Clicked on dayReportLineItem");
         if (!showModal) {
-            console.log("doing handleModalOpen");
             setShowModal(true);
         }
     };
 
-    const handleModalClose = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        console.log("Closing the modal");
+    const handleModalClose = () => {
         setShowModal(false);
     };
 
@@ -55,6 +51,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
 
     const cost: string = formatCurrency(totalCost);
 
+
     const handleDelete = () => {
         tollsArrayForDay.forEach((toll: Toll) => {
             const deletionIndex: number = Number(toll["key"]);
@@ -66,9 +63,24 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
         onRefresh();
     };
 
+    useEffect(() => {
+        const handleEscapeKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && showModal) {
+                handleModalClose();
+            }
+        };
+
+        // Add event listener to the entire document for the Escape key
+        document.addEventListener("keydown", handleEscapeKey);
+
+        // Clean up the event listener when the component unmounts
+        return () => {
+            document.removeEventListener("keydown", handleEscapeKey);
+        };
+    }, [showModal]);
+
     return (
         <div className="dayReportLineItem" onClick={() => {
-            console.log("Clicked on dayReportLineItem");
             handleModalOpen();
         }}
         >

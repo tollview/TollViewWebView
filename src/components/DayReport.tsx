@@ -1,11 +1,11 @@
 import { child, ref, remove } from "firebase/database";
-import React from "react";
+import React, { useState } from "react";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
 import { Toll } from "../models/Toll.ts";
-import "../styles/DayReport.css"
-
+import "../styles/DayReport.css";
+import DayReportModal from "./DayReportModal";
 
 interface DayReportProps {
     thisDayArrayOfTolls: [string, any];
@@ -13,12 +13,11 @@ interface DayReportProps {
     onRefresh: () => void;
 }
 
-
 // IF YOU CHANGE THIS NAME IT WILL ALL BREAK. DO NOT DO.
 const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, onRefresh }) => {
-    const { db }  = useFirebase();
+    const { db } = useFirebase();
     const { user } = useUser();
-    const dbRefAtUserTolls = ref(db, `users/${user?.uid}/tolls/`)
+    const dbRefAtUserTolls = ref(db, `users/${user?.uid}/tolls/`);
     const formatCurrency = (value: number) => {
         return value.toLocaleString("en-US", {
             style: "currency",
@@ -26,9 +25,24 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
         });
     };
 
+    const [showModal, setShowModal] = useState(false);
+
+    const handleModalOpen = () => {
+        console.log("Clicked on dayReportLineItem");
+        if (!showModal) {
+            console.log("doing handleModalOpen");
+            setShowModal(true);
+        }
+    };
+
+    const handleModalClose = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        console.log("Closing the modal");
+        setShowModal(false);
+    };
+
     const day: string = thisDayArrayOfTolls[0];
     const tollsArrayForDay: any[] = thisDayArrayOfTolls[1];
-
 
     // Summing up the costs for the day
     const totalCost: number = tollsArrayForDay.reduce((sum: number, toll: any) => {
@@ -40,23 +54,34 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
     }, 0);
 
     const cost: string = formatCurrency(totalCost);
-    const handleDelete = ()=> {
+
+    const handleDelete = () => {
         tollsArrayForDay.forEach((toll: Toll) => {
-            const deletionIndex: number = Number(toll["key"])
+            const deletionIndex: number = Number(toll["key"]);
             const deletionTarget = child(dbRefAtUserTolls, `${deletionIndex}`);
-            remove(deletionTarget).catch((error) => console.error(`Error deleting ${deletionTarget}: ${error}`));
-        })
+            remove(deletionTarget).catch((error) =>
+                console.error(`Error deleting ${deletionTarget}: ${error}`)
+            );
+        });
         onRefresh();
-    }
+    };
 
     return (
-        // todo don't worry this will be proper css eventually - just blasting thru some test displays
-        <div className="dayReportLineItem">
+        <div className="dayReportLineItem" onClick={() => {
+            console.log("Clicked on dayReportLineItem");
+            handleModalOpen();
+        }}
+        >
             <h2>{day}</h2>
             <h2>{cost}</h2>
             <button onClick={handleDelete}>
-                <span role="img" aria-label="Trash Can">🗑️</span>
+        <span role="img" aria-label="Trash Can">
+          🗑️
+        </span>
             </button>
+
+            {/* Modal */}
+            {showModal && <DayReportModal onClose={handleModalClose} />}
         </div>
     );
 };

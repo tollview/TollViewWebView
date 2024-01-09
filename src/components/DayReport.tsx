@@ -13,7 +13,6 @@ interface DayReportProps {
     onRefresh: () => void;
 }
 
-// IF YOU CHANGE THIS NAME IT WILL ALL BREAK. DO NOT DO.
 const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, onRefresh }) => {
     const { db } = useFirebase();
     const { user } = useUser();
@@ -40,7 +39,6 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
     const day: string = thisDayArrayOfTolls[0];
     const tollsArrayForDay: any[] = thisDayArrayOfTolls[1];
 
-    // Summing up the costs for the day
     const totalCost: number = tollsArrayForDay.reduce((sum: number, toll: any) => {
         const gate = gatesMap[toll.gateId];
         if (gate) {
@@ -50,7 +48,6 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
     }, 0);
 
     const cost: string = formatCurrency(totalCost);
-
 
     const handleDelete = () => {
         tollsArrayForDay.forEach((toll: Toll) => {
@@ -69,11 +66,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
                 handleModalClose();
             }
         };
-
-        // Add event listener to the entire document for the Escape key
         document.addEventListener("keydown", handleEscapeKey);
-
-        // Clean up the event listener when the component unmounts
         return () => {
             document.removeEventListener("keydown", handleEscapeKey);
         };
@@ -91,9 +84,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
           🗑️
         </span>
             </button>
-
-            {/* Modal */}
-            {showModal && <DayReportModal onClose={handleModalClose} />}
+            {showModal && <DayReportModal onClose={handleModalClose} thisDayArrayOfTolls={thisDayArrayOfTolls} gatesMap={gatesMap} />}
         </div>
     );
 };

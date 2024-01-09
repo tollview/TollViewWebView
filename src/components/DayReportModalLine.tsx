@@ -1,11 +1,17 @@
 import React from "react";
 import { Gate } from "../models/Gate.ts";
+import { ref, remove } from "firebase/database";
+import {useFirebase} from "../contexts/FirebaseContext.tsx";
+import {useUser} from "../contexts/UserContext.tsx";
 
 interface DayReportModalLineProps {
-    tollData: any; // Adjust the type accordingly
+    tollData: any;
     gateMap: Record<string, Gate>;
+    onRefresh: () => void;
 }
-const DayReportModalLine: React.FC<DayReportModalLineProps> = ({ tollData, gateMap }) => {
+const DayReportModalLine: React.FC<DayReportModalLineProps> = ({ tollData, gateMap, onRefresh }) => {
+    const { db } = useFirebase();
+    const { user } = useUser();
     const formatTime = (timestamp: any): string => {
         return new Date(timestamp.year, timestamp.month - 1, timestamp.date, timestamp.hours, timestamp.minutes)
             .toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit', hour12: true});
@@ -22,7 +28,16 @@ const DayReportModalLine: React.FC<DayReportModalLineProps> = ({ tollData, gateM
     const tollDataLine: string = `${formatTime(tollData.timestamp)} - ${gateName} - ${gateCost}\u00A0\u00A0`;
 
     const handleDelete = () => {
-        console.log(`Let's delete ${tollData.key}`);
+        // Delete the specific toll
+        const deletionIndex: number = Number(tollData.key);
+        const deletionTarget = ref(db, `users/${user?.uid}/tolls/${deletionIndex}`);
+        remove(deletionTarget)
+            .then(() => {
+                onRefresh();
+            })
+            .catch((error) => {
+                console.error(`Error deleting toll with key ${tollData.key}: ${error}`);
+            });
     };
 
     return (

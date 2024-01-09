@@ -110,6 +110,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
                     thisDayArrayOfTolls={thisDayArrayOfTolls}
                     gatesMap={gatesMap}
                     cost={cost}
+                    onRefresh={onRefresh}
                 />
             )}
         </div>

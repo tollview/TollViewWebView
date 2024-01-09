@@ -1,23 +1,25 @@
 import React from "react";
-import "../styles/DayReport.css";
-import {Gate} from "../models/Gate.ts";
+import { Gate } from "../models/Gate.ts";
 
 interface DayReportModalLineProps {
-    tollData: any;
+    tollData: any; // Adjust the type accordingly
     gateMap: Record<string, Gate>;
 }
-
 const DayReportModalLine: React.FC<DayReportModalLineProps> = ({ tollData, gateMap }) => {
-    console.log(`tollData: ${JSON.stringify(tollData)}`);
-    console.log(`gateMap: ${JSON.stringify(gateMap)}`);
-
     const formatTime = (timestamp: any): string => {
         return new Date(timestamp.year, timestamp.month - 1, timestamp.date, timestamp.hours, timestamp.minutes)
             .toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit', hour12: true});
     };
 
-    const tollDataLine: string = `${formatTime(tollData.timestamp)} - [name] - [cost]`;
+    const gateId = tollData.gateId;
+    const gateInfo = gateMap[gateId];
+    const gateName = gateInfo ? gateInfo.name : "[name]";
+    const gateCost = gateInfo ? gateInfo.cost.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+    }) : "[cost]";
 
+    const tollDataLine: string = `${formatTime(tollData.timestamp)} - ${gateName} - ${gateCost}`;
 
     return (
         <div>

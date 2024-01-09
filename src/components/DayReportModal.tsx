@@ -7,9 +7,10 @@ interface DayReportModalProps {
     thisDayArrayOfTolls: [string, any];
     gatesMap: Record<string, Gate>;
     onClose: () => void;
+    cost: string;
 }
 
-const DayReportModal: React.FC<DayReportModalProps> = ({ onClose, thisDayArrayOfTolls, gatesMap }) => {
+const DayReportModal: React.FC<DayReportModalProps> = ({ onClose, thisDayArrayOfTolls, gatesMap, cost }) => {
     const dateHeaderDisplay: string = new Date(thisDayArrayOfTolls[1][0].timestamp.year, thisDayArrayOfTolls[1][0].timestamp.month - 1, thisDayArrayOfTolls[1][0].timestamp.date)
         .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
@@ -24,6 +25,7 @@ const DayReportModal: React.FC<DayReportModalProps> = ({ onClose, thisDayArrayOf
                 {thisDayArrayOfTolls[1].map((tollData: any, index: number) => (
                     <DayReportModalLine key={index} tollData={tollData} gateMap={gatesMap} />
                 ))}
+                <h1>{cost}</h1>
             </div>
         </div>
     );

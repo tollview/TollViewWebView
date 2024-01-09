@@ -84,7 +84,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
           🗑️
         </span>
             </button>
-            {showModal && <DayReportModal onClose={handleModalClose} thisDayArrayOfTolls={thisDayArrayOfTolls} gatesMap={gatesMap} />}
+            {showModal && <DayReportModal onClose={handleModalClose} thisDayArrayOfTolls={thisDayArrayOfTolls} gatesMap={gatesMap} cost={cost}/>}
         </div>
     );
 };

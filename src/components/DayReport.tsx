@@ -1,5 +1,5 @@
 import { child, ref, remove } from "firebase/database";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
@@ -25,6 +25,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
     };
 
     const [showModal, setShowModal] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const handleModalOpen = () => {
         if (!showModal) {
@@ -35,6 +36,42 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
     const handleModalClose = () => {
         setShowModal(false);
     };
+
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Stop the click event from propagating to the parent div
+        setShowConfirmation(true);
+    };
+
+    const handleNo = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Stop the click event from propagating to the parent div
+        setShowConfirmation(false);
+    };
+
+    const handleYes = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Stop the click event from propagating to the parent div
+        tollsArrayForDay.forEach((toll: Toll) => {
+            const deletionIndex: number = Number(toll["key"]);
+            const deletionTarget = child(dbRefAtUserTolls, `${deletionIndex}`);
+            remove(deletionTarget).catch((error) =>
+                console.error(`Error deleting ${deletionTarget}: ${error}`)
+            );
+        });
+        onRefresh();
+        setShowConfirmation(false); // Close the confirmation dialog if needed
+    };
+
+    useEffect(() => {
+        const handleEscapeKey = (e: KeyboardEvent) => {
+            if ((e.key === "Escape" || e.key === "Esc") && (showModal || showConfirmation)) {
+                handleModalClose();
+                setShowConfirmation(false); // Close the confirmation dialog if needed
+            }
+        };
+        document.addEventListener("keydown", handleEscapeKey);
+        return () => {
+            document.removeEventListener("keydown", handleEscapeKey);
+        };
+    }, [showModal, showConfirmation]);
 
     const day: string = thisDayArrayOfTolls[0];
     const tollsArrayForDay: any[] = thisDayArrayOfTolls[1];
@@ -49,42 +86,32 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
 
     const cost: string = formatCurrency(totalCost);
 
-    const handleDelete = () => {
-        tollsArrayForDay.forEach((toll: Toll) => {
-            const deletionIndex: number = Number(toll["key"]);
-            const deletionTarget = child(dbRefAtUserTolls, `${deletionIndex}`);
-            remove(deletionTarget).catch((error) =>
-                console.error(`Error deleting ${deletionTarget}: ${error}`)
-            );
-        });
-        onRefresh();
-    };
-
-    useEffect(() => {
-        const handleEscapeKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape" && showModal) {
-                handleModalClose();
-            }
-        };
-        document.addEventListener("keydown", handleEscapeKey);
-        return () => {
-            document.removeEventListener("keydown", handleEscapeKey);
-        };
-    }, [showModal]);
-
     return (
-        <div className="dayReportLineItem" onClick={() => {
-            handleModalOpen();
-        }}
-        >
+        <div className="dayReportLineItem" onClick={handleModalOpen}>
             <h2>{day}</h2>
             <h2>{cost}</h2>
-            <button onClick={handleDelete}>
-        <span role="img" aria-label="Trash Can">
-          🗑️
-        </span>
+            <button onClick={(e) => handleDelete(e)}>
+              <span role="img" aria-label="Trash Can">
+                🗑️
+              </span>
             </button>
-            {showModal && <DayReportModal onClose={handleModalClose} thisDayArrayOfTolls={thisDayArrayOfTolls} gatesMap={gatesMap} cost={cost}/>}
+
+            {showConfirmation && (
+                <div className="confirmation-dialog-card">
+                    <p>Are you sure you want to delete an entire day's record of tolls?</p>
+                    <button onClick={(e) => handleYes(e)}>Yes</button>
+                    <button onClick={(e) => handleNo(e)}>No</button>
+                </div>
+            )}
+
+            {showModal && (
+                <DayReportModal
+                    onClose={handleModalClose}
+                    thisDayArrayOfTolls={thisDayArrayOfTolls}
+                    gatesMap={gatesMap}
+                    cost={cost}
+                />
+            )}
         </div>
     );
 };

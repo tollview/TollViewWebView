@@ -90,7 +90,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
         <div className="dayReportLineItem" onClick={handleModalOpen}>
             <h2>{day}</h2>
             <h2>{cost}</h2>
-            <button onClick={(e) => handleDelete(e)}>
+            <button onClick={(e) => handleDelete(e)} style={{background: "none", border: "none", cursor: "pointer"}}>
               <span role="img" aria-label="Trash Can">
                 🗑️
               </span>

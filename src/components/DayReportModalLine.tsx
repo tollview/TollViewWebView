@@ -19,11 +19,20 @@ const DayReportModalLine: React.FC<DayReportModalLineProps> = ({ tollData, gateM
         currency: "USD",
     }) : "[cost]";
 
-    const tollDataLine: string = `${formatTime(tollData.timestamp)} - ${gateName} - ${gateCost}`;
+    const tollDataLine: string = `${formatTime(tollData.timestamp)} - ${gateName} - ${gateCost}\u00A0\u00A0`;
+
+    const handleDelete = () => {
+        console.log(`Let's delete ${tollData.key}`);
+    };
 
     return (
-        <div>
-            <p>{tollDataLine}</p>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <p style={{marginRight: "8px", marginLeft: "8px"}}>{tollDataLine}</p>
+            <button onClick={handleDelete} style={{background: "none", border: "none", cursor: "pointer", marginRight: "8px"}}>
+                <span role="img" aria-label="Trash Can">
+                    🗑️
+                </span>
+            </button>
         </div>
     );
 };

@@ -7,6 +7,7 @@ import { Gate } from "../models/Gate.ts";
 import { Timestamp } from "../models/Timestamp.ts";
 import { Toll } from "../models/Toll.ts";
 import DayReportsList from "../components/DayReportsList.tsx";
+import {handleSignOut} from "../scripts/signOut.ts";
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -126,14 +127,20 @@ const Home: React.FC = () => {
     }, [user, navigate, db, refresh]); // Include 'refresh' in the dependency array
 
     const handleRefresh = () => {
-        setRefresh(!refresh); // Toggle the state to trigger a re-render
+        setRefresh(!refresh);
     };
+
+    const handleLogout = () => {
+        handleSignOut();
+        navigate('/login');
+    }
 
     return (
         <div>
             {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>}
-            <button onClick={handleRefresh}>Refresh</button>
+            <button className="pageNavButton refreshButton" onClick={handleRefresh}>Refresh</button>
             <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap} onRefresh={handleRefresh}/>
+            <button className="pageNavButton logoutButton" onClick={handleLogout}>Logout</button>
         </div>
     );
 }

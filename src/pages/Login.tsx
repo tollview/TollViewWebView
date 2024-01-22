@@ -1,19 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from '../contexts/UserContext.tsx'; // Import the useUser hook
+import { useUser } from '../contexts/UserContext.tsx';
 import { handleSignIn } from "../scripts/signIn.ts";
+import { onAuthStateChanged, getAuth } from 'firebase/auth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { user, setUser } = useUser(); // Use the useUser hook
+    const { user, setUser } = useUser();
     const navigate = useNavigate();
-    
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(getAuth(), (authUser) => {
+            setUser(authUser);
+        });
+
+        return () => unsubscribe();
+    }, [setUser]);
+
     const handleUserSignIn = async () => {
         const userData = await handleSignIn(email, password);
-        setUser(userData); // Update the user state in the context
+        setUser(userData);
         if (userData) {
-            navigate('/'); 
+            navigate('/');
         }
     };
 

@@ -9,7 +9,6 @@ const generateRandomEmail = () => {
 };
 
 export const handleDemoData = async () => {
-
     const email: string = generateRandomEmail();
     const password: string = "123456";
     const auth = getAuth();

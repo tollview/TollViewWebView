@@ -15,7 +15,7 @@ export const handleSignIn = async (email: string | null, password: string): Prom
 
         const snapshot = await get(child(dbRef, 'users'));
         if (snapshot.exists()) {
-            console.log(snapshot.val());
+            null
         } else {
             console.log("No data available");
         }

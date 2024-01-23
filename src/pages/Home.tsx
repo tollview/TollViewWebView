@@ -8,6 +8,7 @@ import { Timestamp } from "../models/Timestamp.ts";
 import { Toll } from "../models/Toll.ts";
 import DayReportsList from "../components/DayReportsList.tsx";
 import {handleSignOut} from "../scripts/signOut.ts";
+import seedDemoData from "../scripts/seedDemoData.ts";
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -77,6 +78,7 @@ const Home: React.FC = () => {
 
                             tollsList.push(tollModel);
                         });
+                        console.log(gatesList)
                         return tollsList;
                     } else {
                         console.log("tolls unable to be found");
@@ -124,7 +126,17 @@ const Home: React.FC = () => {
 
         setupData();
 
-    }, [user, navigate, db, refresh]); // Include 'refresh' in the dependency array
+    }, [user, navigate, db, refresh]);
+
+    useEffect(() => {
+        if (user && user.email && user.email.endsWith("fakemail.com")) {
+            seedDemoData({
+                db,
+                gatesList,
+                user
+            });
+        }
+    }, [user]);
 
     const handleRefresh = () => {
         setRefresh(!refresh);

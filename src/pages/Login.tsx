@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext.tsx';
 import { handleSignIn } from "../scripts/signIn.ts";
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import {handleDemoData} from "../scripts/createDemoData.ts";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -34,8 +35,20 @@ const Login = () => {
         link.click();
     };
 
+    const handleNewDemo = () => {
+        handleDemoData()
+    }
+
+    useEffect(() => {
+        if (user) {
+            console.log(`Welcome, ${user.email}!`);
+        } else {
+            console.log('User not loaded');
+        }
+    }, [user]);
+
     return (
-        <div>
+        <div className={'loginSection'}>
             <form>
                 <label>Email:</label>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
@@ -43,15 +56,14 @@ const Login = () => {
                 <label>Password:</label>
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 <br/>
-                <button onClick={(e) => {
+                <button className={'pageNavButton'} onClick={(e) => {
                     e.preventDefault();
                     handleUserSignIn();
                 }}>Sign In
                 </button>
-
-                {user ? <p>Welcome, {user.email}!</p> : <p>User not loaded</p>}
             </form>
-            <button onClick={handleDownload}>Download TollView APK</button>
+            <button className={'pageNavButton'} onClick={handleDownload}>Download TollView APK</button>
+            <button className={'pageNavButton'} onClick={handleNewDemo}>Demo with Sample Data</button>
         </div>
     );
 }

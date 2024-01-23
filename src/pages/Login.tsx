@@ -35,8 +35,20 @@ const Login = () => {
         link.click();
     };
 
-    const handleNewDemo = () => {
-        handleDemoData()
+    const handleNewDemo = async () => {
+        await handleDemoData();
+        const auth = getAuth();
+        const signInPromise = new Promise<void>((resolve) => {
+            const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+                if (authUser) {
+                    await handleSignIn(authUser.email, '123456');
+                    unsubscribe();
+                    resolve();
+                }
+            });
+        });
+        await signInPromise;
+        navigate('/');
     }
 
     useEffect(() => {

@@ -2,7 +2,7 @@ import { app } from "./firebaseConfig.ts"
 import { getAuth, signInWithEmailAndPassword, User } from "firebase/auth";
 import { getDatabase, ref, child, get } from 'firebase/database';
 
-export const handleSignIn = async (email: string, password: string): Promise<User | null> => {
+export const handleSignIn = async (email: string | null, password: string): Promise<User | null> => {
     const auth = getAuth(app);
     let user: User | null = null 
 

@@ -8,7 +8,7 @@ const generateRandomEmail = () => {
     return `${tollWord}_${viewWord}${randomNumber}@fakemail.com`;
 };
 
-export const handleDemoData = async () => {
+export const handleDemoUserCreation = async () => {
     const email: string = generateRandomEmail();
     const password: string = "123456";
     const auth = getAuth();

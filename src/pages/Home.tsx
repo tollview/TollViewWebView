@@ -136,7 +136,7 @@ const Home: React.FC = () => {
                 user
             });
         }
-    }, [user]);
+    }, [user, gatesList]);
 
     const handleRefresh = () => {
         setRefresh(!refresh);

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext.tsx';
 import { handleSignIn } from "../scripts/signIn.ts";
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
-import {handleDemoData} from "../scripts/createDemoData.ts";
+import {handleDemoUserCreation} from "../scripts/createDemoUser.ts";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -36,7 +36,7 @@ const Login = () => {
     };
 
     const handleNewDemo = async () => {
-        await handleDemoData();
+        await handleDemoUserCreation();
         const auth = getAuth();
         const signInPromise = new Promise<void>((resolve) => {
             const unsubscribe = onAuthStateChanged(auth, async (authUser) => {

@@ -19,7 +19,6 @@ export const handleDemoUserCreation = async () => {
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            console.log("UID of the newly created user:", user.uid);
             const preferencesRef = ref(db, 'users/' + user.uid + '/preferences');
             set(preferencesRef, { isDemo: true });
         }

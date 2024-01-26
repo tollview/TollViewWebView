@@ -78,7 +78,6 @@ const Home: React.FC = () => {
 
                             tollsList.push(tollModel);
                         });
-                        console.log(gatesList)
                         return tollsList;
                     } else {
                         console.log("tolls unable to be found");

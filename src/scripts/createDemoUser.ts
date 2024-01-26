@@ -1,7 +1,8 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {getAuth, createUserWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
+import { getDatabase, ref, set} from "firebase/database";
 const generateRandomEmail = () => {
-    const tollWords = ["Fee", "Fare", "Charge", "Payment", "Tariff", "Levy", "Dues", "Tax", "Turnstile", "Tithe", "Custom", "Rate", "Price"];
-    const viewWords = ["Sight", "Scene", "Vista", "Watcher", "Observer", "Survey", "Vantage", "Perspective", "Summary", "Report", "Picture"];
+    const tollWords = ["Charge", "Dues", "Fare", "Fee", "Levy", "Payment", "Price", "Rate", "Tariff", "Tax", "Tithe", "Turnstile"];
+    const viewWords = ["Observer", "Perspective", "Picture", "Report", "Scene", "Sight", "Summary", "Survey", "Vantage", "Vista", "Watcher"];
     const tollWord = tollWords[Math.floor(Math.random() * tollWords.length)];
     const viewWord = viewWords[Math.floor(Math.random() * viewWords.length)];
     const randomNumber = Math.floor(Math.random() * 900) + 100;
@@ -12,5 +13,15 @@ export const handleDemoUserCreation = async () => {
     const email: string = generateRandomEmail();
     const password: string = "123456";
     const auth = getAuth();
+    const db = getDatabase();
+
     await createUserWithEmailAndPassword(auth, email, password);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("UID of the newly created user:", user.uid);
+            const preferencesRef = ref(db, 'users/' + user.uid + '/preferences');
+            set(preferencesRef, { isDemo: true });
+        }
+    });
 };

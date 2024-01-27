@@ -89,9 +89,6 @@ const Home: React.FC = () => {
                 }
             } else {
                 console.log("User not found");
-                //todo this is just to satisfy the debugger for a quick demo build
-                console.log(gatesList);
-                console.log(tollsList);
                 return [];
             }
         }
@@ -100,6 +97,15 @@ const Home: React.FC = () => {
             if (user) {
                 const fetchedGatesList = await fetchGates();
                 setGatesList(fetchedGatesList);
+
+                if (user && user.email && user.email.endsWith("fakemail.com")) {
+                    seedDemoData({
+                        db,
+                        gatesList,
+                        user
+                    });
+                }
+
                 const fetchedTollsList = await buildTollsList();
                 setTollsList(fetchedTollsList);
 

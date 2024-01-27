@@ -16,26 +16,26 @@ const getRandomGateId = (gatesList: Array<Gate>): string => {
 };
 
 const offsetArray: Array<[number, number, number]> = [
-    [-7, 0, 0],
-    [-7, 0, -5],
-    [-7, 0, -10],
-    [-7, 0, -15],
-    [-8, -2, -23],
-    [-8, -2, -20],
-    [-9, -6, -30],
-    [-10, -3, -15],
-    [-10, -3, -7],
-    [-10, -3, -3],
-    [-11, -22, -32],
-    [-11, -22, -30],
-    [-13, -6, -9],
+    [-13, -5, -50],
     [-13, -6, -1],
-    [-13, -5, -50]
+    [-13, -6, -9],
+    [-11, -22, -30],
+    [-11, -22, -32],
+    [-10, -3, -3],
+    [-10, -3, -7],
+    [-10, -3, -15],
+    [-9, -6, -30],
+    [-8, -2, -20],
+    [-8, -2, -23],
+    [-7, 0, -15],
+    [-7, 0, -10],
+    [-7, 0, -5],
+    [-7, 0, 0]
 ];
 
 const generateTimestamp = (offset: [number, number, number]): Timestamp => {
     const now = new Date();
-    const timestampDate = new Date(now);
+    const timestampDate = new Date(now.getTime());
 
     timestampDate.setDate(now.getDate() + offset[0]);
     timestampDate.setHours(now.getHours() + offset[1]);
@@ -45,9 +45,9 @@ const generateTimestamp = (offset: [number, number, number]): Timestamp => {
         date: timestampDate.getDate(),
         hours: timestampDate.getHours(),
         minutes: timestampDate.getMinutes(),
-        month: timestampDate.getMonth() + 1,
+        month: timestampDate.getMonth(),
         timezoneOffset: timestampDate.getTimezoneOffset(),
-        year: timestampDate.getFullYear(),
+        year: timestampDate.getFullYear() - 1900,
     };
 };
 

@@ -81,6 +81,7 @@ const Home: React.FC = () => {
                         return tollsList;
                     } else {
                         console.log("tolls unable to be found");
+                        setRefresh(!refresh);
                         return [];
                     }
                 } catch (error) {
@@ -97,14 +98,6 @@ const Home: React.FC = () => {
             if (user) {
                 const fetchedGatesList = await fetchGates();
                 setGatesList(fetchedGatesList);
-
-                if (user && user.email && user.email.endsWith("fakemail.com")) {
-                    seedDemoData({
-                        db,
-                        gatesList,
-                        user
-                    });
-                }
 
                 const fetchedTollsList = await buildTollsList();
                 setTollsList(fetchedTollsList);
@@ -133,15 +126,19 @@ const Home: React.FC = () => {
 
     }, [user, navigate, db, refresh]);
 
+    const [demoDataSeeded, setDemoDataSeeded] = useState(false);
+
     useEffect(() => {
-        if (user && user.email && user.email.endsWith("fakemail.com")) {
+        if (user && user.email && user.email.endsWith("fakemail.com") && gatesList && gatesList.length > 0 && !demoDataSeeded) {
+            console.log("gatesList: ", gatesList);
             seedDemoData({
                 db,
                 gatesList,
                 user
             });
+            setDemoDataSeeded(true);
         }
-    }, [user, gatesList]);
+    }, [user, gatesList, demoDataSeeded]);
 
     const handleRefresh = () => {
         setRefresh(!refresh);

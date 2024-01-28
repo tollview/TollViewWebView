@@ -1,15 +1,28 @@
 .dayReportLineItem {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
     justify-content: space-between;
     width: 90vw;
-    border: 1px solid black;
+    background-color: #26262d;
+    border: 1px solid #888;
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 1);
+}
+
+.dayReportLineItem .h2-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    overflow: hidden;
 }
 
 .modal {
     display: none;
     position: fixed;
-    z-index: 1; /* Ensure the modal is on top of other elements */
+    z-index: 1;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -47,7 +60,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    z-index: 999; /* Ensure the dialog is on top of other elements */
+    z-index: 999;
 }
 
 .confirmation-dialog-card p {

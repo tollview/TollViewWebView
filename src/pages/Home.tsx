@@ -58,7 +58,7 @@ const Home: React.FC = () => {
                     if (snapshot.exists()) {
                         const tollsList: Array<Toll> = [];
                         snapshot.forEach((childSnapshot) => {
-                            const key = childSnapshot.key; // This is the Firebase key
+                            const key = childSnapshot.key;
                             const tollData = childSnapshot.val();
 
                             const timestampModel: Timestamp = {

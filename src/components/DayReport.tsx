@@ -38,17 +38,17 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
     };
 
     const handleDelete = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Stop the click event from propagating to the parent div
+        e.stopPropagation();
         setShowConfirmation(true);
     };
 
     const handleNo = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Stop the click event from propagating to the parent div
+        e.stopPropagation();
         setShowConfirmation(false);
     };
 
     const handleYes = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Stop the click event from propagating to the parent div
+        e.stopPropagation();
         tollsArrayForDay.forEach((toll: Toll) => {
             const deletionIndex: number = Number(toll["key"]);
             const deletionTarget = child(dbRefAtUserTolls, `${deletionIndex}`);
@@ -57,14 +57,14 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
             );
         });
         onRefresh();
-        setShowConfirmation(false); // Close the confirmation dialog if needed
+        setShowConfirmation(false);
     };
 
     useEffect(() => {
         const handleEscapeKey = (e: KeyboardEvent) => {
             if ((e.key === "Escape" || e.key === "Esc") && (showModal || showConfirmation)) {
                 handleModalClose();
-                setShowConfirmation(false); // Close the confirmation dialog if needed
+                setShowConfirmation(false);
             }
         };
         document.addEventListener("keydown", handleEscapeKey);
@@ -88,13 +88,16 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
 
     return (
         <div className="dayReportLineItem" onClick={handleModalOpen}>
-            <h2>{day}</h2>
-            <h2>{cost}</h2>
-            <button onClick={(e) => handleDelete(e)} style={{background: "none", border: "none", cursor: "pointer"}}>
-              <span role="img" aria-label="Trash Can">
+            <div className="h2-container">
+                <h2>{day}</h2>
+                <h2>{cost}</h2>
+                <button onClick={(e) => handleDelete(e)}
+                        style={{background: "none", border: "none", cursor: "pointer"}}>
+            <span role="img" aria-label="Trash Can">
                 🗑️
-              </span>
-            </button>
+            </span>
+                </button>
+            </div>
 
             {showConfirmation && (
                 <div className="confirmation-dialog-card">
@@ -114,6 +117,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
                 />
             )}
         </div>
+
     );
 };
 

@@ -3,6 +3,7 @@ import { Gate } from "../models/Gate.ts";
 import { ref, remove } from "firebase/database";
 import {useFirebase} from "../contexts/FirebaseContext.tsx";
 import {useUser} from "../contexts/UserContext.tsx";
+import "../styles/DayReport.css";
 
 interface DayReportModalLineProps {
     tollData: any;
@@ -44,7 +45,7 @@ const DayReportModalLine: React.FC<DayReportModalLineProps> = ({ tollData, gateM
         <div style={{ display: "flex", justifyContent: "space-between" }}>
             <p style={{marginRight: "8px", marginLeft: "8px"}}>{tollDataLine}</p>
             <button onClick={handleDelete} style={{background: "none", border: "none", cursor: "pointer", marginRight: "8px"}}>
-                <span role="img" aria-label="Trash Can">
+                <span className="deletion-icon" role="img" aria-label="Trash Can">
                     🗑️
                 </span>
             </button>

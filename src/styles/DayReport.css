@@ -5,8 +5,9 @@
     justify-content: space-between;
     width: 90vw;
     background-color: #26262d;
-    border: 1px solid #888;
+    border: 2px solid #888;
     padding: 4px;
+    margin-top: 17px;
     border-radius: 8px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 1);
 }
@@ -17,6 +18,13 @@
     align-items: center;
     width: 90%;
     overflow: hidden;
+}
+
+.deletion-icon {
+    filter: brightness(255);
+    font-size: 1.7em;
+    position: relative;
+    top: -0.05em;
 }
 
 .modal {

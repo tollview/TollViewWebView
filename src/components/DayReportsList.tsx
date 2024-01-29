@@ -1,4 +1,4 @@
-import React from "react";
+
 import DayReport from "./DayReport";
 
 interface DayReportsListProps {

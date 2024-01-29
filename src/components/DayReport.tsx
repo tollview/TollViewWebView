@@ -4,8 +4,8 @@ import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
 import { Toll } from "../models/Toll.ts";
-import "../styles/DayReport.css";
 import DayReportModal from "./DayReportModal";
+import "../styles/DayReport.css";
 
 interface DayReportProps {
     thisDayArrayOfTolls: [string, any];
@@ -93,7 +93,7 @@ const DayReport: React.FC<DayReportProps> = ({ thisDayArrayOfTolls, gatesMap, on
                 <h2>{cost}</h2>
                 <button onClick={(e) => handleDelete(e)}
                         style={{background: "none", border: "none", cursor: "pointer"}}>
-            <span role="img" aria-label="Trash Can">
+            <span className="deletion-icon" role="img" aria-label="Trash Can">
                 🗑️
             </span>
                 </button>

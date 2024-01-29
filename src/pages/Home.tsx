@@ -7,6 +7,7 @@ import { Gate } from "../models/Gate.ts";
 import { Timestamp } from "../models/Timestamp.ts";
 import { Toll } from "../models/Toll.ts";
 import DayReportsList from "../components/DayReportsList.tsx";
+import NavBar from "../components/NavBar.tsx";
 import {handleSignOut} from "../scripts/signOut.ts";
 import seedDemoData from "../scripts/seedDemoData.ts";
 
@@ -151,6 +152,7 @@ const Home: React.FC = () => {
 
     return (
         <div>
+            <NavBar/>
             {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>}
             <button className="pageNavButton refreshButton" onClick={handleRefresh}>Refresh</button>
             <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap} onRefresh={handleRefresh}/>

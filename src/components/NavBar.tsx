@@ -1,10 +1,15 @@
 import React from "react";
 import "../styles/NavBar.css";
+import {User} from "firebase/auth";
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+    user: User | null;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ user }) => {
     return (
         <div className="NavBar">
-            <p>hi</p>
+            {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>}
         </div>
     );
 };

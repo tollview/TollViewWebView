@@ -152,8 +152,7 @@ const Home: React.FC = () => {
 
     return (
         <div>
-            <NavBar/>
-            {user ? <p>Welcome, {user.email}</p> : <p>No user logged in</p>}
+            <NavBar user={user} />
             <button className="pageNavButton refreshButton" onClick={handleRefresh}>Refresh</button>
             <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap} onRefresh={handleRefresh}/>
             <button className="pageNavButton logoutButton" onClick={handleLogout}>Logout</button>

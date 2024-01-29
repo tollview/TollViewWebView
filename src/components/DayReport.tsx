@@ -5,7 +5,7 @@ import { useUser } from "../contexts/UserContext.tsx";
 import { Gate } from "../models/Gate.ts";
 import { Toll } from "../models/Toll.ts";
 import DayReportModal from "./DayReportModal";
-import "../styles/DayReport.css";
+import "../styles/pages/DayReport.css";
 
 interface DayReportProps {
     thisDayArrayOfTolls: [string, any];

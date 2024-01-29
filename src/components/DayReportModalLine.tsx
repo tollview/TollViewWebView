@@ -3,7 +3,7 @@ import { Gate } from "../models/Gate.ts";
 import { ref, remove } from "firebase/database";
 import {useFirebase} from "../contexts/FirebaseContext.tsx";
 import {useUser} from "../contexts/UserContext.tsx";
-import "../styles/DayReport.css";
+import "../styles/pages/DayReport.css";
 
 interface DayReportModalLineProps {
     tollData: any;

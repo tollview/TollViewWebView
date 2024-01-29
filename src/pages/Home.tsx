@@ -155,7 +155,7 @@ const Home: React.FC = () => {
             <NavBar user={user} />
             <button className="pageNavButton refreshButton" onClick={handleRefresh}>Refresh</button>
             <DayReportsList tollsByDate={tollsByDate} gatesMap={gatesMap} onRefresh={handleRefresh}/>
-            <button className="pageNavButton logoutButton" onClick={handleLogout}>Logout</button>
+            <button className="pageNavButton bottomRightButton" onClick={handleLogout}>Logout</button>
         </div>
     );
 }

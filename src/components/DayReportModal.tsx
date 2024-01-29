@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/DayReport.css";
+import "../styles/pages/DayReport.css";
 import { Gate } from "../models/Gate.ts";
 import DayReportModalLine from "./DayReportModalLine.tsx";
 

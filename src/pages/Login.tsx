@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext.tsx';
 import { handleSignIn } from "../scripts/signIn.ts";
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import {handleDemoUserCreation} from "../scripts/createDemoUser.ts";
+import NavBar from "../components/NavBar.tsx";
+import "../styles/pages/Login.css"
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -60,24 +62,32 @@ const Login = () => {
     }, [user]);
 
     return (
-        <div className={'loginSection'}>
-            <form>
-                <label>Email:</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                <br/>
-                <label>Password:</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                <br/>
-                <button className={'pageNavButton'} onClick={(e) => {
-                    e.preventDefault();
-                    handleUserSignIn();
-                }}>Sign In
-                </button>
-            </form>
-            <button className={'pageNavButton'} onClick={handleDownload}>Download TollView APK</button>
-            <button className={'pageNavButton'} onClick={handleNewDemo}>Demo with Sample Data</button>
-        </div>
+        <>
+            <NavBar user={user}/>
+            <br/><br/>
+            <div className="loginContainer">
+                <div className={'loginSection'}>
+                    <form>
+                        <input type="email" placeholder="Email" value={email}
+                               onChange={(e) => setEmail(e.target.value)}/>
+                        <br/>
+                        <input type="password" placeholder="Password" value={password}
+                               onChange={(e) => setPassword(e.target.value)}/>
+                        <br/>
+                        <button className={'pageNavButton'} onClick={(e) => {
+                            e.preventDefault();
+                            handleUserSignIn();
+                        }}>Sign In
+                        </button>
+                    </form>
+                    <button className={'pageNavButton'} onClick={handleNewDemo}>Demo with Sample Data</button>
+                </div>
+            </div>
+            <button className={'pageNavButton bottomRightButton'} onClick={handleDownload}>Download TollView APK
+            </button>
+        </>
     );
+
 }
 
 export default Login;

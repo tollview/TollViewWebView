@@ -7,22 +7,24 @@ import "../styles/pages/UserPreferences.css";
 
 interface UserPreferencesModalProps {
     onClose: () => void;
+    onNameChange: (newName: string) => void; // Add the onNameChange prop
 }
 
-const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose }) => {
+const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose, onNameChange }) => {
     const { user } = useUser();
     const { db } = useFirebase();
     const [email, setEmail] = useState<string>(user?.email || "");
     const [demoAccount, setDemoAccount] = useState<string>("Unknown");
-    const [name, setName] = useState<string>(" "); // Default value for the name field
+    const [name, setName] = useState<string>(" ");
 
     useEffect(() => {
         if (user) {
             // Construct the path to the preferences node in the database
-            const preferencesRef = ref(db, `users/${user.uid}/preferences/isDemo`);
+            const isDemoRef = ref(db, `users/${user.uid}/preferences/isDemo`);
+            const nameRef = ref(db, `users/${user.uid}/preferences/name`);
 
             // Retrieve the isDemo value from the preferences node
-            get(preferencesRef)
+            get(isDemoRef)
                 .then((snapshot: DataSnapshot) => {
                     // Check if the value exists and is either true or false
                     if (snapshot.exists() && (snapshot.val() === true || snapshot.val() === false)) {
@@ -35,6 +37,20 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose }) 
                 .catch((error) => {
                     console.error("Error fetching isDemo value from the database", error);
                 });
+
+            // Retrieve the name value from the preferences node
+            get(nameRef)
+                .then((snapshot: DataSnapshot) => {
+                    // Check if the value exists and is not null
+                    if (snapshot.exists() && snapshot.val() !== null) {
+                        setName(snapshot.val());
+                    } else {
+                        console.log("Name value not found in the database or is null");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching name value from the database", error);
+                });
         }
     }, [db, user]);
 
@@ -45,6 +61,8 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose }) 
             set(preferencesRef, e.target.value)
                 .then(() => {
                     console.log("Name updated successfully");
+                    // Pass the new name to the parent component
+                    onNameChange(e.target.value);
                 })
                 .catch((error) => {
                     console.error("Error updating name value in the database", error);

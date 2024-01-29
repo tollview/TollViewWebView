@@ -29,7 +29,6 @@ const DayReportModalLine: React.FC<DayReportModalLineProps> = ({ tollData, gateM
     const tollDataLine: string = `${formatTime(tollData.timestamp)} - ${gateName} - ${gateCost}\u00A0\u00A0`;
 
     const handleDelete = () => {
-        // Delete the specific toll
         const deletionIndex: number = Number(tollData.key);
         const deletionTarget = ref(db, `users/${user?.uid}/tolls/${deletionIndex}`);
         remove(deletionTarget)

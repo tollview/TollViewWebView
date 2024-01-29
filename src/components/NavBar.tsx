@@ -54,7 +54,7 @@ const NavBar: React.FC<NavBarProps> = ({ user }) => {
                     {showUserPreferencesModal && (
                         <UserPreferencesModal
                             onClose={handleUserPreferencesModalClose}
-                            onNameChange={handleNameChange} // Pass the callback to UserPreferencesModal
+                            onNameChange={handleNameChange}
                         />
                     )}
                 </>

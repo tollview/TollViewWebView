@@ -7,7 +7,7 @@ import "../styles/pages/UserPreferences.css";
 
 interface UserPreferencesModalProps {
     onClose: () => void;
-    onNameChange: (newName: string) => void; // Add the onNameChange prop
+    onNameChange: (newName: string) => void;
 }
 
 const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose, onNameChange }) => {
@@ -19,18 +19,14 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose, on
 
     useEffect(() => {
         if (user) {
-            // Construct the path to the preferences node in the database
             const isDemoRef = ref(db, `users/${user.uid}/preferences/isDemo`);
             const nameRef = ref(db, `users/${user.uid}/preferences/name`);
 
-            // Retrieve the isDemo value from the preferences node
             get(isDemoRef)
                 .then((snapshot: DataSnapshot) => {
-                    // Check if the value exists and is either true or false
                     if (snapshot.exists() && (snapshot.val() === true || snapshot.val() === false)) {
                         setDemoAccount(snapshot.val() ? "Yes" : "No");
                     } else {
-                        // Handle the case where the value is not present or not a valid boolean
                         console.error("Invalid value for isDemo in the database");
                     }
                 })
@@ -38,10 +34,8 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose, on
                     console.error("Error fetching isDemo value from the database", error);
                 });
 
-            // Retrieve the name value from the preferences node
             get(nameRef)
                 .then((snapshot: DataSnapshot) => {
-                    // Check if the value exists and is not null
                     if (snapshot.exists() && snapshot.val() !== null) {
                         setName(snapshot.val());
                     } else {
@@ -54,14 +48,12 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose, on
         }
     }, [db, user]);
 
-    // Update the name in the database when the input changes
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (user) {
             const preferencesRef = ref(db, `users/${user.uid}/preferences/name`);
             set(preferencesRef, e.target.value)
                 .then(() => {
                     console.log("Name updated successfully");
-                    // Pass the new name to the parent component
                     onNameChange(e.target.value);
                 })
                 .catch((error) => {
@@ -69,7 +61,6 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose, on
                 });
         }
 
-        // Update the local state
         setName(e.target.value);
     };
 

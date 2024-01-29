@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { get, ref, DataSnapshot } from "firebase/database";
+import { get, ref, DataSnapshot, set } from "firebase/database";
 import { useUser } from "../contexts/UserContext";
 import { useFirebase } from "../contexts/FirebaseContext.tsx";
 import "../styles/pages/DayReport.css";
@@ -14,6 +14,7 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose }) 
     const { db } = useFirebase();
     const [email, setEmail] = useState<string>(user?.email || "");
     const [demoAccount, setDemoAccount] = useState<string>("Unknown");
+    const [name, setName] = useState<string>(" "); // Default value for the name field
 
     useEffect(() => {
         if (user) {
@@ -36,6 +37,23 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose }) 
                 });
         }
     }, [db, user]);
+
+    // Update the name in the database when the input changes
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (user) {
+            const preferencesRef = ref(db, `users/${user.uid}/preferences/name`);
+            set(preferencesRef, e.target.value)
+                .then(() => {
+                    console.log("Name updated successfully");
+                })
+                .catch((error) => {
+                    console.error("Error updating name value in the database", error);
+                });
+        }
+
+        // Update the local state
+        setName(e.target.value);
+    };
 
     return (
         <div className="modal preferencesModal" style={{ display: "block" }}>
@@ -64,6 +82,15 @@ const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ onClose }) 
                         <option value="No">No</option>
                         <option value="Yes">Yes</option>
                     </select>
+                </div>
+                <div className="field">
+                    <label>Name: </label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={handleNameChange}
+                        className="preferenceField"
+                    />
                 </div>
             </div>
         </div>
